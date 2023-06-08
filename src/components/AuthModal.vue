@@ -6,7 +6,7 @@ import { storeToRefs } from 'pinia';
 const props = defineProps(['isLogin']);
 const visible = ref(false);
 const userStore = useUserStore();
-const { errorMessage } = storeToRefs(userStore);
+const { errorMessage, loading } = storeToRefs(userStore);
 
 const userCredentials = reactive({
   email: '',
@@ -22,6 +22,11 @@ const handleOk = (e) => {
   userStore.handleSignup(userCredentials);
 };
 
+const handleCancel = () => {
+  userStore.clearErrorMessage();
+  visible.value = false;
+};
+
 const title = props.isLogin ? 'Login' : 'Signup';
 </script>
 
@@ -31,23 +36,39 @@ const title = props.isLogin ? 'Login' : 'Signup';
       title
     }}</a-button>
     <a-modal v-model:visible="visible" :title="props.isLogin" @ok="handleOk">
-      <a-input
-        class="input"
-        v-if="!isLogin"
-        v-model:value="userCredentials.username"
-        placeholder="Username"
-      />
-      <a-input
-        class="input"
-        v-model:value="userCredentials.email"
-        placeholder="Email"
-      />
-      <a-input
-        type="password"
-        class="input"
-        v-model:value="userCredentials.password"
-        placeholder="Password"
-      />
+      <template #footer>
+        <a-button key="back" @click="handleCancel">Cancel</a-button>
+        <a-button
+          :disable="loading"
+          key="submit"
+          type="primary"
+          :loading="loading"
+          @click="handleOk"
+          >Submit</a-button
+        >
+      </template>
+      <div v-if="!loading" class="input-container">
+        <a-input
+          class="input"
+          v-if="!isLogin"
+          v-model:value="userCredentials.username"
+          placeholder="Username"
+        />
+        <a-input
+          class="input"
+          v-model:value="userCredentials.email"
+          placeholder="Email"
+        />
+        <a-input
+          type="password"
+          class="input"
+          v-model:value="userCredentials.password"
+          placeholder="Password"
+        />
+      </div>
+      <div v-else="loading" class="spinner">
+        <a-spin />
+      </div>
       <a-typography-text v-if="errorMessage" type="danger">{{
         errorMessage
       }}</a-typography-text>

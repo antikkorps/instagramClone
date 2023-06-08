@@ -2,6 +2,7 @@
 import { defineProps } from 'vue';
 
 const props = defineProps(['posts']);
+const { VITE_APP_SUPABASE_URL } = import.meta.env;
 </script>
 
 <template>

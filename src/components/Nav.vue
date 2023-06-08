@@ -36,8 +36,8 @@ const onSearch = () => {
           <AuthModal :isLogin="true" />
         </div>
         <div class="right-content" v-else>
-          <a-button type="primary">Profile</a-button>
-          <a-button type="primary">Logout</a-button>
+          <a-button type="primary" @click="goToUsersProfile">Profile</a-button>
+          <a-button type="primary" @click="handleLogout">Logout</a-button>
         </div>
       </div>
     </Container>
